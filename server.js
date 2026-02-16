@@ -6,6 +6,13 @@ const { Pool } = require("pg");
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 
+app.use(session({
+  secret: process.env.SESSION_SECRET || "zeinovan-secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
@@ -66,4 +73,8 @@ app.get("/logout",(req,res)=>{
   res.redirect("/");
 });
 
-app.listen(3000, ()=>console.log("Running..."));
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("Running on port " + PORT);
+});
